@@ -1,0 +1,161 @@
+1)sailor name who reserved boatno 103;
+mysql> select s.sailorname from sailors s,boats b,reserves r where s.sailorid=r.sailorid and r.boatid=103;
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
++------------+
+18 rows in set (0.00 sec)
+
+mysql> select distinct s.sailorname from sailors s,boats b,reserves r where s.sailorid=r.sailorid and r.boatid=103;
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Lubber     |
+| Horatio    |
++------------+
+2)sailor name who reserved boatcolour "green";
+mysql> select s.sailorname from sailors s,boats b,reserves r where s.sailorid=r.sailorid and b.boatcolour="green";
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
+| Horatio    |
+| Dustin     |
+| Lubber     |
++------------+
+10 rows in set (0.00 sec)
+
+mysql> select distinct s.sailorname from sailors s,boats b,reserves r where s.sailorid=r.sailorid and b.boatcolour="green";
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Horatio    |
+| Lubber     |
++------------+
+3)boat colours reserved by Dustin;
+mysql> select distinct b.boatcolour from sailors s,boats b,reserves r where s.sailorid=r.sailorid and s.sailorname="Lubber" and b.boatid=r.boatid;
++------------+
+| boatcolour |
++------------+
+| Red        |
+| Green      |
++------------+
+4)sailors names who reserved atleast one boat.
+mysql> select distinct s.sailorname from sailors s,reserves r,boats b where s.sailorid=r.sailorid;
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Horatio    |
+| Lubber     |
++------------+
+5) sailorids who reserved 104 boatid or rating 10;
+mysql> select s.sailorid from sailors s where s.rating=10 union select s.sailorid from sailors s,boats b ,reserves r where s.sailorid=r.sailorid and b.boatid=r.boatid and b.boatid=104;
++----------+
+| sailorid |
++----------+
+|       58 |
+|       71 |
+|       22 |
+|       31 |
++----------+
+4 rows in set (0.00 sec)
+
+mysql> select distinct s.sailorid from sailors s,reserves r,boats b where s.rating=10 or(s.sailorid=r.sailorid and r.boatid=b.boatid and r.boatid=104); 
++----------+
+| sailorid |
++----------+
+|       58 |
+|       71 |
+|       22 |
+|       31 |
++----------+
+4 rows in set (0.00 sec)
+
+6)max sailorage from sailors whose rating 10 and the sailor names whose age greater than 1st condition;
+mysql> select s.sailorname from sailors s where s.age>( select max(s.age) from sailors s,reserves r,boats b where s.rating=10);
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Lubber     |
+| Bob        |
++------------+
+----------------------------------------------------------------------------------------
+avg age of sailors 
+mysql> select avg(age) from sailors;
++----------+
+| avg(age) |
++----------+
+|  37.1000 |
+how many sailors exist with rating 7;
+mysql> select count(s.sailorname) from sailors s where s.rating>7;
++---------------------+
+| count(s.sailorname) |
++---------------------+
+|                   5 |
++---------------------+
+selecct the sailor name whose age is min;
+mysql> select s.sailorname from sailors s where s.age=(select min(s.age) from sailors s);
++------------+
+| sailorname |
++------------+
+| Zobra      |
++------------+
+1 row in set (0.00 sec)
+select the sailor name whose age is max;
+mysql> select s.sailorname from sailors s where s.age=(select max(s.age) from sailors s);
++------------+
+| sailorname |
++------------+
+| Bob        |
++------------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

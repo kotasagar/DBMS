@@ -1,0 +1,165 @@
+create the table for sailors , boats, reserves as per given question.
+mysql> create table sailors(sailorid numeric,sailorname varchar(29),rating numeric,age numeric,primary key(sailorid));
+
+mysql> desc sailors;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| sailorid   | decimal(10,0) | NO   | PRI | NULL    |       |
+| sailorname | varchar(29)   | YES  |     | NULL    |       |
+| rating     | decimal(10,0) | YES  |     | NULL    |       |
+| age        | decimal(10,0) | YES  |     | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+mysql> create table boats(boatid numeric,boatname varchar(20),boatcolour varchar(10),primary key(boatid));
+Query OK, 0 rows affected (0.48 sec)
+
+mysql> desc boats;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| boatid     | decimal(10,0) | NO   | PRI | NULL    |       |
+| boatname   | varchar(20)   | YES  |     | NULL    |       |
+| boatcolour | varchar(10)   | YES  |     | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> create table reserves(sailorid numeric,boatid numeric,day date,primary key(sailorid,boatid,day),foreign key(sailorid) references sailors(sailorid),foreign key(boatid) references boats(boatid));
+Query OK, 0 rows affected (0.36 sec)
+
+mysql> desc reserves;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| sailorid | decimal(10,0) | NO   | PRI | NULL    |       |
+| boatid   | decimal(10,0) | NO   | PRI | NULL    |       |
+| day      | date          | NO   | PRI | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+inserting data;
+
+mysql> insert into sailors values(22,"Dustin",7,45),(29,"Brutus",1,33),(31,"Lubber",8,55.5),(32,"Andy",8,25.5),(58,"Rusty",10,35),(64,"Horatio",7,35),(71,"Zobra",10,16),(74,"Horatio",9,35),(85,"Art",3,25.5),(95,"Bob",3,63.5);
+mysql> select *from sailors;
++----------+------------+--------+------+
+| sailorid | sailorname | rating | age  |
++----------+------------+--------+------+
+|       22 | Dustin     |      7 |   45 |
+|       29 | Brutus     |      1 |   33 |
+|       31 | Lubber     |      8 |   56 |
+|       32 | Andy       |      8 |   26 |
+|       58 | Rusty      |     10 |   35 |
+|       64 | Horatio    |      7 |   35 |
+|       71 | Zobra      |     10 |   16 |
+|       74 | Horatio    |      9 |   35 |
+|       85 | Art        |      3 |   26 |
+|       95 | Bob        |      3 |   64 |
++----------+------------+--------+------+
+10 rows in set (0.00 sec)
+mysql> insert into boats values(101,"Interlake","Blue"),(102,"Interlake","Red"),(103,"Clipper","Green"),(104,"Marine","Red");
+mysql> insert into boats values(105,"Dallake","Yellow"),(106,"Pinklake","Pink");
+Query OK, 2 rows affected (0.06 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select *from boats;
++--------+-----------+------------+
+| boatid | boatname  | boatcolour |
++--------+-----------+------------+
+|    101 | Interlake | Blue       |
+|    102 | Interlake | Red        |
+|    103 | Clipper   | Green      |
+|    104 | Marine    | Red        |
+|    105 | Dallake   | Yellow     |
+|    106 | Pinklake  | Pink       |
++--------+-----------+------------+
+6 rows in set (0.00 sec)
+
+ values(22,101,"1998-10-10"),(22,102,"1998-10-10"),(22,103,"1998-8-10"),(22,104,"1998-7-10"),(31,102,"1998-10-11");
+mysql> insert into reserves values(31,103,"1998-6-11"),(31,104,"1998-12-11"),(64,101,"1998-5-9"),(64,102,"1998-8-9"),(74,103,"1998-8-9");
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from reserves;
++----------+--------+------------+
+| sailorid | boatid | day        |
++----------+--------+------------+
+|       22 |    101 | 1998-10-10 |
+|       64 |    101 | 1998-05-09 |
+|       22 |    102 | 1998-10-10 |
+|       31 |    102 | 1998-10-11 |
+|       64 |    102 | 1998-08-09 |
+|       22 |    103 | 1998-08-10 |
+|       31 |    103 | 1998-06-11 |
+|       74 |    103 | 1998-08-09 |
+|       22 |    104 | 1998-07-10 |
+|       31 |    104 | 1998-12-11 |
++----------+--------+------------+
+10 rows in set (0.00 sec)
+
+to display all sailor name;
+mysql> select sailorname from sailors;
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Brutus     |
+| Lubber     |
+| Andy       |
+| Rusty      |
+| Horatio    |
+| Zobra      |
+| Horatio    |
+| Art        |
+| Bob        |
++------------+
+
+to display all boats names;
+mysql> select boatname from boats;
++-----------+
+| boatname  |
++-----------+
+| Interlake |
+| Interlake |
+| Clipper   |
+| Marine    |
+| Dallake   |
+| Pinklake  |
++-----------+
+
+to display all sailorid's who reserved boats;
+
+mysql> select sailors.sailorname from sailors,reserves where sailors.sailorid=reserves.sailorid;
++------------+
+| sailorname |
++------------+
+| Dustin     |
+| Dustin     |
+| Dustin     |
+| Dustin     |
+| Lubber     |
+| Lubber     |
+| Lubber     |
+| Horatio    |
+| Horatio    |
+| Horatio    |
++------------+
+10 rows in set (0.01 sec)
+
+mysql> select distinct reserves.sailorid from sailors,reserves where sailors.sailorid=reserves.sailorid;
++----------+
+| sailorid |
++----------+
+|       22 |
+|       31 |
+|       64 |
+|       74 |
++----------+
+ 
+display sailorsname whose sailorid in reserves;
+display boatid which is reserved on "10 oct 1998";
+display boatname which is reserrved on 10 oct 1998;
+display sailornames who reserved boats and rating is greater than 7;
+
+
+
+to display sailorsname who reserved "clipper" 
