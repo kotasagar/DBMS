@@ -1,0 +1,226 @@
+TABLE CREATION :-
+-----------------------------------------------
+DEPARTMENT  TABLE:
+CREATE TABLE DEPARTMENT (DNO VARCHAR(20) PRIMARY KEY, DNAME VARCHAR(20),MGRSTARTDATE DATE);
+
+EMPLOYEE TABLE:
+CREATE TABLE EMPLOYEE (FNAME VARCHAR(20), MNAME VARCHAR(20), LNAME VARCHAR(20), SSN VARCHAR (20) PRIMARY KEY, DOB DATE, ADDRESS VARCHAR (20), GENDER VARCHAR(10),  SALARY INTEGER, SUPERSSN VARCHAR(20) REFERENCES EMPLOYEE (SSN), DNO VARCHAR(20) REFERENCES DEPARTMENT (DNO));
+
+NOTE: Once DEPARTMENT and EMPLOYEE tables are created we must alter department table to add foreign constraint MGRSSN using sql command
+
+ALTER TABLE DEPARTMENT
+ADD MGRSSN VARCHAR(20) REFERENCES EMPLOYEE (SSN);
+
+DEPENDENT TABLE:
+CREATE TABLE DEPENDENT (ESSN VARCHAR(20) REFERENCES EMPLOYEE(SSN), DEPENDENTNAME VARCHAR(20), GENDER VARCHAR(20), DOB DATE, RELATIONSHIP VARCHAR(20));
+
+DLOCATION TABLE:
+CREATE TABLE DLOCATION(DLOC VARCHAR(20),DNO VARCHAR(20) REFERENCES DEPARTMENT(DNO), PRIMARY KEY(DNO, DLOC));
+
+PROJECT TABLE:
+CREATE TABLE PROJECT (PNAME VARCHAR(20),PNO INTEGER PRIMARY KEY,  PLOCATION VARCHAR(20), DNO VARCHAR(20) REFERENCES DEPARTMENT (DNO));
+
+WORKS_ON TABLE:
+CREATE TABLE WORKS_ON(ESSN VARCHAR(20) REFERENCES EMPLOYEE(SSN),PNO INTEGER REFERENCES PROJECT(PNO), PRIMARY KEY (ESSN, PNO), HOURS INTEGER);
+
+INSERT DATA INTO EMPLOYEE:
+----------------------------------------
+INSERT INTO EMPLOYEE (FNAME , MNAME , LNAME , SSN , DOB , ADDRESS , GENDER ,  SALARY , SUPERSSN , DNO ) VALUES
+('John','B','Smith','123456789','1965-02-09','731 Fondren','M',30000,'333445555',5),
+('Franklin','T','Wong','333445555','1955-12-08','638 Voss','M',40000,'888665555',5),
+('Alicia','J','Zelaya','999887777','1968-01-19','3321 Castle','F',25000,'987654321',4),('Jennifer','S','Wallance','987654321','1941-06-20','291 Berry','F',43000,'888665555',4),('Ramesh','K','Narayana','666884444','1962-09-15','975 Fire Oak','M',38000,'333445555',5),('Joyce','A','English','453453453','1972-07-31','5631 Rice','F',25000,'333445555',5),('Ahmad','V','Jabbar','987987987','1969-03-22','980 Dallas','M',25000,'987987987',4),('James','E','Brog','888665555','1937-10-10','450 Stone','M',55000,'NULL',1);
+
+INSERT INTO DEPARTMENT:
+----------------------------------------
+INSERT INTO DEPARTMENT (DNO, DNAME,MGRSTARTDATE,MGRSSN) VALUES
+('5','Research','1988-05-22','333445555'),('4','Administration','1995-01-01','987654321'),('1','Headquarters','1981-06-19','888665555');
+
+INSERT INTO DEPENDENT:
+--------------------------------------
+INSERT INTO DEPENDENT (ESSN,DEPENDENTNAME,GENDER,DOB, RELATIONSHIP) VALUES('333445555','Alice','F','1986-04-05','Daughter'),('333445555','Theodore','M','1983-10-25','Son'),('333445555','Joy','F','1958-05-03','Spouse'),('987654321','Abner','M','1942-02-28','Spouse'),('123456789','Michael','M','1988-01-04','Son'),('123456789','Elizabeth','F','1967-05-05','Spouse');
+
+INSERT INTO DLOCATION:
+--------------------------------------
+INSERT INTO DLOCATION(DLOC,DNO) VALUES
+('Houstan','1'),
+('Stafford','4'),
+('Bellaire','5'),
+('Sugarland','5'),
+('Houstan','5');
+
+
+INSERT INTO PROJECT:
+--------------------------------------
+INSERT INTO PROJECT (PNAME,PNO,  PLOCATION, DNO) VALUES
+('ProductX',1,'Bellaire','5'),
+('ProductY',2,'Sugarland','5'),
+('ProductZ',3,'Houstan','5'),
+('Computerization',10,'Stafford','4'),
+('Reorganization',20,'Houstan','1'),
+('Newbenefits',30,'Stafford','4');
+
+
+INSERT INTO WORKS_ON:
+---------------------------------------
+INSERT INTO WORKS_ON(ESSN,PNO,HOURS) VALUES('123456789',1,32),('123456789',2,47),
+('666884444',3,40),
+('453453453',1,20),
+('333445555',2,20),
+('333445555',1,10),
+('333445555',3,10),
+('333445555',10,10),
+('999887777',20,10),
+('999887777',30,30),
+('987987987',10,10),
+('987987987',11,35),
+('987654321',30,5),
+('987654321',31,20),
+('888665555',20,15);
+
+RESULTS:-
+----------------------------------------
+B)
+mysql> CREATE VIEW RESULTB AS (SELECT FNAME,LNAME,DNAME FROM EMPLOYEE,DEPARTMENT WHERE EMPLOYEE.DNO=DEPARTMENT.DNO);
+Query OK, 0 rows affected (0.06 sec)
+mysql> SELECT * FROM RESULTB;
++----------+----------+----------------+
+| FNAME    | LNAME    | DNAME          |
++----------+----------+----------------+
+| John     | Smith    | Research       |
+| Franklin | Wong     | Research       |
+| Joyce    | English  | Research       |
+| Ramesh   | Narayana | Research       |
+| James    | Brog     | Headquarters   |
+| Jennifer | Wallance | Administration |
+| Ahmad    | Jabbar   | Administration |
+| Alicia   | Zelaya   | Administration |
++----------+----------+----------------+
+8 rows in set (0.02 sec)
+----------------------------------------
+C)
+mysql> CREATE VIEW RESULTC AS (SELECT FNAME,LNAME,DEPENDENTNAME FROM EMPLOYEE,DEPENDENT WHERE DEPENDENT.ESSN=EMPLOYEE.SSN);
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULTC;
++----------+----------+---------------+
+| FNAME    | LNAME    | DEPENDENTNAME |
++----------+----------+---------------+
+| Franklin | Wong     | Alice         |
+| Franklin | Wong     | Theodore      |
+| Franklin | Wong     | Joy           |
+| Jennifer | Wallance | Abner         |
+| John     | Smith    | Michael       |
+| John     | Smith    | Elizabeth     |
++----------+----------+---------------+
+6 rows in set (0.00 sec)
+-----------------------------------------
+D)
+mysql> CREATE VIEW RESULTD AS (SELECT FNAME,LNAME,ADDRESS FROM EMPLOYEE,DEPARTMENT WHERE EMPLOYEE.DNO=DEPARTMENT.DNO AND DNAME='RESEARCH');
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULTD;
++----------+----------+--------------+
+| FNAME    | LNAME    | ADDRESS      |
++----------+----------+--------------+
+| John     | Smith    | 731 Fondren  |
+| Franklin | Wong     | 638 Voss     |
+| Joyce    | English  | 5631 Rice    |
+| Ramesh   | Narayana | 975 Fire Oak |
++----------+----------+--------------+
+4 rows in set (0.00 sec)
+----------------------------------------
+E)
+mysql> CREATE VIEW RESULTE AS (SELECT FNAME,LNAME FROM EMPLOYEE WHERE(SELECT COUNT(*) FROM DEPENDENT WHERE SSN=ESSN)>=2);
+Query OK, 0 rows affected (0.06 sec)
+mysql> SELECT * FROM RESULTE;
++----------+-------+
+| FNAME    | LNAME |
++----------+-------+
+| John     | Smith |
+| Franklin | Wong  |
++----------+-------+
+2 rows in set (0.00 sec)
+----------------------------------------
+F)
+mysql> CREATE VIEW RESULTF AS (SELECT FNAME,LNAME FROM EMPLOYEE WHERE NOT EXISTS(SELECT * FROM DEPENDENT WHERE SSN=ESSN));
+Query OK, 0 rows affected (0.06 sec)
+mysql> SELECT * FROM RESULTF;
++--------+----------+
+| FNAME  | LNAME    |
++--------+----------+
+| Joyce  | English  |
+| Ramesh | Narayana |
+| James  | Brog     |
+| Ahmad  | Jabbar   |
+| Alicia | Zelaya   |
++--------+----------+
+5 rows in set (0.01 sec)
+-----------------------------------------
+G)
+mysql> CREATE VIEW RESULTG AS (SELECT FNAME,LNAME FROM EMPLOYEE WHERE EXISTS (SELECT * FROM DEPENDENT WHERE SSN=ESSN) AND EXISTS (SELECT * FROM DEPARTMENT WHERE SSN=MGRSSN));
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULTG;
++----------+----------+
+| FNAME    | LNAME    |
++----------+----------+
+| Franklin | Wong     |
+| Jennifer | Wallance |
++----------+----------+
+2 rows in set (0.00 sec)
+-----------------------------------------
+H)
+mysql> CREATE VIEW RESULTH AS (SELECT E1.FNAME,E1.LNAME,E2.FNAME AS SUPERVISOR FROM EMPLOYEE E1,EMPLOYEE E2 WHERE E2.SSN=E1.SUPERSSN);
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULTH;
++----------+----------+------------+
+| FNAME    | LNAME    | SUPERVISOR |
++----------+----------+------------+
+| John     | Smith    | Franklin   |
+| Franklin | Wong     | James      |
+| Joyce    | English  | Franklin   |
+| Ramesh   | Narayana | Franklin   |
+| Jennifer | Wallance | James      |
+| Ahmad    | Jabbar   | Ahmad      |
+| Alicia   | Zelaya   | Jennifer   |
++----------+----------+------------+
+7 rows in set (0.00 sec)
+I)
+-----------------------------------------
+mysql> CREATE VIEW RESULTI AS (SELECT DNAME,FNAME FROM EMPLOYEE E,DEPARTMENT D WHERE E.SSN=D.MGRSSN);
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULTI;
++----------------+----------+
+| DNAME          | FNAME    |
++----------------+----------+
+| Headquarters   | James    |
+| Administration | Jennifer |
+| Research       | Franklin |
++----------------+----------+
+3 rows in set (0.00 sec)
+J)
+-----------------------------------------
+mysql> CREATE VIEW RESULTJ AS (SELECT E.FNAME,E.LNAME FROM EMPLOYEE AS E WHERE E.SSN IN (SELECT ESSN FROM EMPLOYEE,DEPENDENT WHERE FNAME=DEPENDENTNAME AND EMPLOYEE.GENDER=DEPENDENT.GENDER));
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULTJ;
+Empty set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
