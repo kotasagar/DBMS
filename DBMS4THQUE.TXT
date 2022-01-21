@@ -1,0 +1,166 @@
+TABLE CREATION :-
+-------------------------------------
+DLOCATION TABLE:
+CREATE TABLE DLOCATION(DLOC VARCHAR(20),DNO VARCHAR(20) REFERENCES DEPARTMENT(DNO), PRIMARY KEY(DNO, DLOC));
+
+PROJECT TABLE:
+CREATE TABLE PROJECT (PNAME VARCHAR(20),PNO INTEGER PRIMARY KEY,  PLOCATION VARCHAR(20), DNO VARCHAR(20) REFERENCES DEPARTMENT (DNO));
+
+WORKS_ON TABLE:
+CREATE TABLE WORKS_ON(ESSN VARCHAR(20) REFERENCES EMPLOYEE(SSN),PNO INTEGER REFERENCES PROJECT(PNO), PRIMARY KEY (ESSN, PNO), HOURS INTEGER);
+
+INSERT INTO DLOCATION:
+--------------------------------------
+INSERT INTO DLOCATION(DLOC,DNO) VALUES
+('Houstan','1'),
+('Stafford','4'),
+('Bellaire','5'),
+('Sugarland','5'),
+('Houstan','5');
+
+
+INSERT INTO PROJECT:
+--------------------------------------
+INSERT INTO PROJECT (PNAME,PNO,  PLOCATION, DNO) VALUES
+('ProductX',1,'Bellaire','5'),
+('ProductY',2,'Sugarland','5'),
+('ProductZ',3,'Houstan','5'),
+('Computerization',10,'Stafford','4'),
+('Reorganization',20,'Houstan','1'),
+('Newbenefits',30,'Stafford','4');
+
+
+INSERT INTO WORKS_ON:
+---------------------------------------
+INSERT INTO WORKS_ON(ESSN,PNO,HOURS) VALUES('123456789',1,32),('123456789',2,47),
+('666884444',3,40),
+('453453453',1,20),
+('333445555',2,20),
+('333445555',1,10),
+('333445555',3,10),
+('333445555',10,10),
+('999887777',20,10),
+('999887777',30,30),
+('987987987',10,10),
+('987987987',11,35),
+('987654321',30,5),
+('987654321',31,20),
+('888665555',20,15);
+
+RESULTS:-
+--------------------------------------
+B)
+mysql> CREATE VIEW RESULT4B AS (SELECT DISTINCT E.FNAME,E.LNAME FROM EMPLOYEE E,DEPARTMENT D, PROJECT P,WORKS_ON W WHERE D.DNAME='RESEARCH' AND D.DNO=P.DNO AND W.ESSN=E.SSN AND P.PNO=W.PNO);
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM RESULT4B;
++----------+----------+
+| FNAME    | LNAME    |
++----------+----------+
+| John     | Smith    |
+| Franklin | Wong     |
+| Joyce    | English  |
+| Ramesh   | Narayana |
++----------+----------+
+4 rows in set (0.00 sec)
+----------------------------------------
+C)
+mysql> CREATE VIEW RESULT4C AS (SELECT P.PNO,P.PNAME,COUNT(W.ESSN) FROM PROJECT P,WORKS_ON W WHERE P.PNO=W.PNO GROUP BY P.PNO,P.PNAME);
+Query OK, 0 rows affected (0.09 sec)
+mysql> SELECT * FROM RESULT4C;
++-----+-----------------+---------------+
+| PNO | PNAME           | COUNT(W.ESSN) |
++-----+-----------------+---------------+
+|   1 | ProductX        |             3 |
+|   2 | ProductY        |             2 |
+|   3 | ProductZ        |             2 |
+|  10 | Computerization |             2 |
+|  20 | Reorganization  |             2 |
+|  30 | Newbenefits     |             2 |
++-----+-----------------+---------------+
+6 rows in set (0.01 sec)
+---------------------------------------
+D)
+mysql> CREATE VIEW RESULT4D AS (SELECT P.PNAME,D.DNAME FROM PROJECT P,DEPARTMENT D WHERE P.DNO=D.DNO);
+Query OK, 0 rows affected (0.06 sec)
+mysql> SELECT * FROM RESULT4D;
++-----------------+----------------+
+| PNAME           | DNAME          |
++-----------------+----------------+
+| ProductX        | Research       |
+| ProductY        | Research       |
+| ProductZ        | Research       |
+| Computerization | Administration |
+| Reorganization  | Headquarters   |
+| Newbenefits     | Administration |
++-----------------+----------------+
+6 rows in set (0.01 sec)
+-----------------------------------------
+E)
+mysql> CREATE VIEW RESULT4E AS (SELECT DISTINCT E.FNAME,E.LNAME FROM EMPLOYEE E,WORKS_ON W WHERE E.SSN=W.ESSN AND W.PNO IN (SELECT W.PNO FROM EMPLOYEE E,WORKS_ON W WHERE E.SSN=W.ESSN AND E.FNAME='JOHN'));
+Query OK, 0 rows affected (0.10 sec)
+mysql> SELECT * FROM RESULT4E;
++----------+---------+
+| FNAME    | LNAME   |
++----------+---------+
+| John     | Smith   |
+| Franklin | Wong    |
+| Joyce    | English |
++----------+---------+
+3 rows in set (0.00 sec)
+-----------------------------------------
+F)
+mysql> CREATE VIEW RESULT4F AS (SELECT DISTINCT P.PNO FROM PROJECT P,DEPARTMENT D,EMPLOYEE E WHERE  D.MGRSSN=E.SSN AND D.DNO=P.DNO) UNION(SELECT DISTINCT P.PNO FROM EMPLOYEE E,PROJECT P,WORKS_ON W WHERE E.SSN=W.ESSN AND P.PNO=W.PNO);
+Query OK, 0 rows affected (0.10 sec)
+mysql> SELECT *FROM RESULT4F;
++-----+
+| PNO |
++-----+
+|  20 |
+|  10 |
+|  30 |
+|   1 |
+|   2 |
+|   3 |
++-----+
+----------------------------------------
+G)
+mysql> CREATE VIEW RESULT4G AS (SELECT E.FNAME,E.LNAME FROM EMPLOYEE E,PROJECT P,DEPARTMENT D,WORKS_ON W WHERE D.DNO=E.DNO AND D.DNAME='RESEARCH' AND D.DNO=P.DNO AND P.PNAME='PRODUCTX' AND P.PNO=W.PNO AND W.ESSN=E.SSN AND W.HOURS>10);
+Query OK, 0 rows affected (0.11 sec)
+mysql> SELECT * FROM RESULT4G;
++-------+---------+
+| FNAME | LNAME   |
++-------+---------+
+| John  | Smith   |
+| Joyce | English |
++-------+---------+
+2 rows in set (0.00 sec)
+------------------------------------------
+H)
+mysql> CREATE VIEW RESULT4H AS (SELECT P.PNAME,SUM(W.HOURS) FROM PROJECT P,WORKS_ON W WHERE P.PNO=W.PNO GROUP BY P.PNAME,P.PNO);
+Query OK, 0 rows affected (0.04 sec)
+mysql> SELECT * FROM RESULT4H;
++-----------------+--------------+
+| PNAME           | SUM(W.HOURS) |
++-----------------+--------------+
+| Computerization |           20 |
+| Newbenefits     |           35 |
+| ProductX        |           62 |
+| ProductY        |           67 |
+| ProductZ        |           50 |
+| Reorganization  |           25 |
++-----------------+--------------+
+6 rows in set (0.00 sec)
+-----------------------------------------
+I)
+mysql> CREATE VIEW RESULT4I AS (SELECT E.FNAME FROM EMPLOYEE E WHERE E.SSN IN (SELECT W.ESSN FROM WORKS_ON W WHERE W.PNO=ALL(SELECT PNO FROM PROJECT)));
+Query OK, 0 rows affected (0.06 sec)
+mysql> SELECT * FROM RESULT4I;
+Empty set (0.00 sec)
+-----------------------------------------
+J)
+mysql> CREATE VIEW RESULT4J AS (SELECT E.FNAME,E.LNAME FROM EMPLOYEE E WHERE E.SSN NOT IN (SELECT W.ESSN FROM WORKS_ON W));
+Query OK, 0 rows affected (0.08 sec)
+mysql> SELECT * FROM RESULT4J;
+Empty set (0.01 sec)
+
+
