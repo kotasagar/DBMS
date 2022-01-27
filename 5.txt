@@ -1,0 +1,88 @@
+5) Create a view that has project name, controlling department name, number of employees
+andtotal hours worked on the project for each project with more than one employee
+working on it.
+
+TABLE CREATION :-
+------------------------------------------------------------------------
+mysql> CREATE VIEW PROJECT_VIEW(PNAME,DNAME,NOOFEMP,NOOFHRS) AS SELECT P.PNAME,D.DNAME,COUNT(W.ESSN),SUM(W.HOURS) FROM PROJECT P,DEPARTMENT D,WORKS_ON W WHERE P.DNO=D.DNO AND P.PNO=W.PNO GROUP BY W.PNO,P.PNAME,D.DNAME;
+Query OK, 0 rows affected (0.05 sec)
+mysql> SELECT * FROM PROJECT_VIEW;
++-----------------+----------------+---------+---------+
+| PNAME           | DNAME          | NOOFEMP | NOOFHRS |
++-----------------+----------------+---------+---------+
+| ProductX        | Research       |       3 |      62 |
+| ProductY        | Research       |       2 |      67 |
+| ProductZ        | Research       |       2 |      50 |
+| Computerization | Administration |       2 |      20 |
+| Reorganization  | Headquarters   |       2 |      25 |
+| Newbenefits     | Administration |       2 |      35 |
++-----------------+----------------+---------+---------+
+6 rows in set (0.00 sec)
+-------------------------------------------------------------------------
+A)List the projects that are controlled by one department from this view.
+mysql> CREATE VIEW RESULT5A AS (SELECT PNAME FROM PROJECT_VIEW WHERE DNAME='RESEARCH');
+Query OK, 0 rows affected (0.09 sec)
+mysql> SELECT * FROM RESULT5A;
++----------+
+| PNAME    |
++----------+
+| ProductZ |
+| ProductX |
+| ProductY |
++----------+
+3 rows in set (0.00 sec)
+-----------------------------------------------------------------------
+B)List the managers of the controlling departments for all the projects.
+mysql> CREATE VIEW RESULT5B AS (SELECT E.FNAME,E.LNAME,P.DNAME,P.PNAME FROM EMPLOYEE E, PROJECT_VIEW P,DEPARTMENT D WHERE E.SSN=D.MGRSSN AND D.DNAME=P.DNAME);
+Query OK, 0 rows affected (0.09 sec)
+mysql> SELECT * FROM RESULT5B;
++----------+----------+----------------+-----------------+
+| FNAME    | LNAME    | DNAME          | PNAME           |
++----------+----------+----------------+-----------------+
+| James    | Brog     | Headquarters   | Reorganization  |
+| Jennifer | Wallance | Administration | Newbenefits     |
+| Jennifer | Wallance | Administration | Computerization |
+| Franklin | Wong     | Research       | ProductY        |
+| Franklin | Wong     | Research       | ProductZ        |
+| Franklin | Wong     | Research       | ProductX        |
++----------+----------+----------------+-----------------+
+6 rows in set (0.00 sec)
+------------------------------------------------------------------------
+C)Demonstrate one update operation on this view.
+IF PARENT TABLE HAS ANY CONSTRAINTS VIEW TABLE IS NOT UPDATED ;
+-----------------------------------------------------------------------
+D)List the Location of the controlling departments for all the projects.
+mysql> CREATE VIEW RESULT5D AS (SELECT P.PNAME,PV.DNAME,D.DLOC FROM PROJECT_VIEW PV,DLOCATION D,PROJECT P WHERE P.DNO=D.DNO AND P.PNAME=PV.PNAME);
+Query OK, 0 rows affected (0.09 sec)
+mysql> SELECT * FROM RESULT5D;
++-----------------+----------------+-----------+
+| PNAME           | DNAME          | DLOC      |
++-----------------+----------------+-----------+
+| ProductX        | Research       | Bellaire  |
+| ProductX        | Research       | Houstan   |
+| ProductX        | Research       | Sugarland |
+| ProductY        | Research       | Bellaire  |
+| ProductY        | Research       | Houstan   |
+| ProductY        | Research       | Sugarland |
+| ProductZ        | Research       | Bellaire  |
+| ProductZ        | Research       | Houstan   |
+| ProductZ        | Research       | Sugarland |
+| Computerization | Administration | Stafford  |
+| Reorganization  | Headquarters   | Houstan   |
+| Newbenefits     | Administration | Stafford  |
++-----------------+----------------+-----------+
+12 rows in set (0.01 sec)
+----------------------------------------------------------------------
+E)Retrieve the data from the view.
+mysql> SELECT * FROM PROJECT_VIEW;
++-----------------+----------------+---------+---------+
+| PNAME           | DNAME          | NOOFEMP | NOOFHRS |
++-----------------+----------------+---------+---------+
+| ProductX        | Research       |       3 |      62 |
+| ProductY        | Research       |       2 |      67 |
+| ProductZ        | Research       |       2 |      50 |
+| Computerization | Administration |       2 |      20 |
+| Reorganization  | Headquarters   |       2 |      25 |
+| Newbenefits     | Administration |       2 |      35 |
++-----------------+----------------+---------+---------+
+6 rows in set (0.01 sec)

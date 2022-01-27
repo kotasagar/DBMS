@@ -1,0 +1,178 @@
+1) Create a table STUDENT with appropriate data types and perform the following
+queries. Attributes are Roll number, student name, date of birth, branch and year of
+study.
+
+mysql> create table student(Roll_number int primary key,student_name varchar(20),
+->date_of_birth date,branch varchar(5),year_of_study int);
+Query OK, 0 rows affected (0.46 sec)
+
+a) Insert 5 to 10 rows in a table?
+mysql> insert into  
+student(Roll_number,student_name,date_of_birth,branch,year_of_study) values(222,"venkat","1991-09-26","cse",2020),
+->(333,'siva','1990-04-10','AIDS',2021),(111,"srikanth","1990-03-16","cse",2020),(444,'Rajani','1980-05-12','IT',2010),
+->(555,'Sindhu','1993-03-26','ECE',2017),(666,'Nayana','1995-05-05','AIML',2002); 
+Query OK, 5 rows affected (0.09 sec)
+
+mysql> select * from student;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	   111| srikanth     | 1990-03-16    | cse    | 	 2020 |
+| 	   222| venkat       | 1991-09-26    | cse    | 	 2020 |
+|          333| siva         | 1990-04-10    | AIDS   |          2021 |
+|          444| Rajani       | 1980-05-12    | IT     | 	2010  |
+|          555| Sindhu       | 1993-03-26    | ECE    | 	2017  |
+|          666| Nayana       | 1995-05-05    | AIML   | 	2002  |
++-------------+--------------+---------------+--------+---------------+
+----------------------------------------------------------------------------
+b)List all the students of all branches
+mysql> select student_name from student;
++--------------+
+| student_name |
++--------------+
+| srikanth     |
+| venkat       |
+| siva         | 
+| Rajani       |
+| Sindhu       |
+| Nayana       |
++--------------+
+6 rows in set (0.00 sec)
+-----------------------------------------------------------------------------
+c) list all student names start with 's'
+mysql> select student_name from student
+-> where student_name like 's%';
++--------------+
+| student_name |
++--------------+
+| srikanth     |
+| siva         |
+| Sindhu       |
++--------------+
+3 rows in set (0.00 sec)
+-----------------------------------------------------------------------------
+d) List student names whose name contains 's' as the third literal
+mysql> select * from student
+-> where student_name like '__s%';
+Empty set (0.00 sec)
+-----------------------------------------------------------------------------
+e) list student names whose contains two 's' any where
+mysql> select student_name from student where student_name like '%s%s%';
+Empty set (0.00 sec)
+------------------------------------------------------------------------------
+f) list of students whose branch is null
+mysql> insert into
+student(Roll_number,student_name,date_of_birth,branch,year_of_study)
+-> values(777,'nandana','2003-04-28',null,2020);
+Query OK, 1 row affected (0.07 sec)
+mysql> select * from student;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	  111 | srikanth     | 1990-03-16    | cse    | 	 2020 |
+| 	  222 | venkat       | 1991-09-26    | cse    | 	 2020 |
+| 	  333 | siva         | 1990-04-10    | AIDS   | 	 2021 |
+| 	  444 | Rajani       | 1980-05-12    | IT     | 	 2010 |
+| 	  555 | Sindhu       | 1993-03-26    | ECE    | 	 2017 |
+| 	  666 | Nayana       | 1995-05-05    | AIML   | 	 2002 |
+| 	  777 | nandana      | 2003-04-28    | NULL   | 	 2020 |
++-------------+--------------+---------------+--------+---------------+
+7 rows in set (0.01 sec)
+mysql> select * from student
+-> where branch is null;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	777   | nandana      | 2003-04-28    | NULL   | 	 2020 |
++-------------+--------------+---------------+--------+---------------+
+1 row in set (0.00 sec)
+------------------------------------------------------------------------------
+g) List students of CSE & ECE who born after 1980.
+mysql> select * from student
+-> where branch in ('cse','ECE') and date_of_birth > 1980;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	  111 | srikanth     | 1990-03-16    | cse    | 	 2020 |
+| 	  222 | venkat       | 1991-09-26    | cse    | 	 2020 |
+| 	  555 | Sindhu       | 1993-03-26    | ECE    | 	 2017 |
++-------------+--------------+---------------+--------+---------------+
+3 rows in set, 1 warning (0.00 sec)
+--------------------------------------------------------------------------------
+h) List all students in reverse order of their names
+mysql> select * from student
+-> order by student_name desc;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	  222 | venkat       | 1991-09-26    | cse    | 	 2020 |
+| 	  111 | srikanth     | 1990-03-16    | cse    | 	 2020 |
+| 	  333 | siva         | 1990-04-10    | AIDS   | 	 2021 |
+| 	  555 | Sindhu       | 1993-03-26    | ECE    | 	 2017 |
+| 	  444 | Rajani       | 1980-05-12    | IT     | 	 2010 |
+| 	  666 | Nayana       | 1995-05-05    | AIML   | 	 2002 |
+| 	  777 | nandana      | 2003-04-28    | NULL   | 	 2020 |
++-------------+--------------+---------------+--------+---------------+
+7 rows in set (0.00 sec) 
+-----------------------------------------------------------------------------------
+i) Delete students of any branch whose name starts with ‘s‘.
+mysql> delete from student where student_name like "s%";
+Query OK, 3 rows affected (0.06 sec)
+mysql> select * from student;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	  222 | venkat 	     | 1991-09-26    | cse    | 	 2020 |
+| 	  444 | Rajani       | 1980-05-12    | IT     | 	 2010 |
+| 	  666 | Nayana 	     | 1995-05-05    | AIML   | 	 2002 |
+| 	  777 | nandana	     | 2003-04-28    | NULL   | 	 2020 |
++-------------+--------------+---------------+--------+---------------+
+4 rows in set (0.00 sec)
+To disable autocommit use
+mysql> set autocommit=false;
+Query OK, 0 rows affected (0.03 sec)
+-----------------------------------------------------------------------------------
+j) update the branch of cse students to ece
+mysql> update student set branch='ece' 
+-> where branch='cse';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1 Changed: 1 Warnings: 0
+mysql> select * from student;
++-------------+--------------+---------------+--------+---------------+
+| Roll_number | student_name | date_of_birth | branch | year_of_study |
++-------------+--------------+---------------+--------+---------------+
+| 	  222 | venkat 	     | 1991-09-26    | ece    | 	 2020 |
+| 	  444 | Rajani 	     | 1980-05-12    | IT     | 	 2010 |
+|  	  666 | Nayana 	     | 1995-05-05    | AIML   | 	 2002 |
+| 	  777 | nandana      | 2003-04-28    | NULL   | 	 2020 |
++-------------+--------------+---------------+--------+---------------+
+4 rows in set (0.00 sec)
+To create a savepoint we need to start the transtaction first.
+mysql> start transaction;
+Query OK, 0 rows affected
+transaction-1
+transaction-2
+transaction-3
+transaction-4
+transaction-5
+savepoint A;
+transaction-6
+transaction-7
+transaction-8
+if we rollback to A; then transaction-6,7,8 are removed.
+------------------------------------------------------------------------------------
+k) display student name padded with * after the name of all the students.
+mysql> select RPAD(student_name,30,"*") as Name
+-> from student;
++--------------------------------+
+| Name 				 |
++--------------------------------+
+| venkat************************ |
+| Rajani************************ |
+| Nayana************************ |
+| nandana*********************** |
++--------------------------------+
+4 rows in set (0.00 sec) 
+
+
+
