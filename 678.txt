@@ -1,3 +1,63 @@
-CREATE VIEW EMP_VIEW AS (SELECT E.SSN,E.FNAME,E.LNAME,D.DNAME FROM EMPLOYEE E,DEPARTMENT D);
-CREATE VIEW DEPT_VIEW AS (SELECT DNO,DLOC FROM DLOCATIONS);
-CREATE VIEW MANAGER AS (SELECT FNAME,LNAME FROM EMPLOYEE WHERE SSN=SUPERSSN);
+6)
+mysql> CREATE VIEW EMP_VIEW AS (SELECT E.SSN,E.FNAME,E.LNAME,D.DNAME FROM EMPLOYEE E,DEPARTMENT D);
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> SELECT * FROM EMP_VIEW;
++-----------+----------+----------+----------------+
+| SSN       | FNAME    | LNAME    | DNAME          |
++-----------+----------+----------+----------------+
+| 123456789 | John     | Smith    | Headquarters   |
+| 123456789 | John     | Smith    | Administration |
+| 123456789 | John     | Smith    | Research       |
+| 333445555 | Franklin | Wong     | Headquarters   |
+| 333445555 | Franklin | Wong     | Administration |
+| 333445555 | Franklin | Wong     | Research       |
+| 453453453 | Joyce    | English  | Headquarters   |
+| 453453453 | Joyce    | English  | Administration |
+| 453453453 | Joyce    | English  | Research       |
+| 666884444 | Ramesh   | Narayana | Headquarters   |
+| 666884444 | Ramesh   | Narayana | Administration |
+| 666884444 | Ramesh   | Narayana | Research       |
+| 888665555 | James    | Brog     | Headquarters   |
+| 888665555 | James    | Brog     | Administration |
+| 888665555 | James    | Brog     | Research       |
+| 987654321 | Jennifer | Wallance | Headquarters   |
+| 987654321 | Jennifer | Wallance | Administration |
+| 987654321 | Jennifer | Wallance | Research       |
+| 987987987 | Ahmad    | Jabbar   | Headquarters   |
+| 987987987 | Ahmad    | Jabbar   | Administration |
+| 987987987 | Ahmad    | Jabbar   | Research       |
+| 999887777 | Alicia   | Zelaya   | Headquarters   |
+| 999887777 | Alicia   | Zelaya   | Administration |
+| 999887777 | Alicia   | Zelaya   | Research       |
++-----------+----------+----------+----------------+
+24 rows in set (0.00 sec)
+-----------------------------------------------------------------------------------------
+7)
+mysql> CREATE VIEW DEPT_VIEW AS (SELECT DNO,DLOC FROM DLOCATION);
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> SELECT * FROM DEPT_VIEW;
++-----+-----------+
+| DNO | DLOC      |
++-----+-----------+
+| 1   | Houstan   |
+| 4   | Stafford  |
+| 5   | Bellaire  |
+| 5   | Houstan   |
+| 5   | Sugarland |
++-----+-----------+
+5 rows in set (0.00 sec)
+------------------------------------------------------------------------------------------
+8)
+mysql> CREATE VIEW MANAGER AS (SELECT FNAME,LNAME FROM EMPLOYEE WHERE SSN=SUPERSSN);
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> SELECT * FROM MANAGER;
++-------+--------+
+| FNAME | LNAME  |
++-------+--------+
+| Ahmad | Jabbar |
++-------+--------+
+1 row in set (0.00 sec)
+
