@@ -1,0 +1,21 @@
+mysql> delimiter //
+mysql> create procedure emp_sal_update(in dept varchar(20))
+    -> begin
+    -> declare flag int default 0;
+    -> declare s int default 0;
+    -> declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+    -> declare continue handler for not found set flag=1;
+    -> open update_cur;
+    -> getRec:LOOP
+    -> fetch update_cur into s;
+    -> if flag=1 then 
+    -> LEAVE getRec;
+    -> end if;
+    -> update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+    -> end LOOP getRec;
+    -> close update_cur;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ;
