@@ -1,21 +1,57 @@
-mysql> delimiter //
-mysql> create procedure emp_sal_update(in dept varchar(20))
-    -> begin
-    -> declare flag int default 0;
-    -> declare s int default 0;
-    -> declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
-    -> declare continue handler for not found set flag=1;
-    -> open update_cur;
-    -> getRec:LOOP
-    -> fetch update_cur into s;
-    -> if flag=1 then 
-    -> LEAVE getRec;
-    -> end if;
-    -> update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
-    -> end LOOP getRec;
-    -> close update_cur;
-    -> end
-    -> //
-Query OK, 0 rows affected (0.00 sec)
+12) Create a cursor to modify the salary of all employees belonging to 'Research' department by 150%.
 
-mysql> delimiter ;
+create procedure emp_sal_update(in dept varchar(20))
+begin
+declare flag int default 0;
+declare s int default 0;
+declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+declare continue handler for not found set flag=1;
+open update_cur;
+getRec: LOOP
+fetch update_cur into s;
+if flag=1 then
+LEAVE getRec;
+end if;
+update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+END LOOP getRec;
+close update_cur;
+end
+
+
+
+
+13) Consider the college database. Retrieve all students who have registered for a specific course and store their details into another table using Cursors.
+
+create procedure getStudents(in x varchar(10))
+begin
+declare flag int default 0;
+declare stdno int;
+declare stdname varchar(20);
+declare stdcourse varchar(10);
+declare get_cur cursor for select sno,sname,course from student where course=x;
+declare continue handler for not found set flag=1;
+open get_cur;
+getRec: LOOP
+fetch get_cur into stdno,stdname,stdcourse;
+if flag=1 then
+LEAVE getRec;
+end if;
+insert into temp_student values(stdno,stdname,stdcourse);
+END LOOP getRec;
+close get_cur;
+end
+
+
+
+
+14) Write an update trigger on Account table. The system should keep track of the records that are being updated.
+
+CREATE TRIGGER ACCUPDATE BEFORE UPDATE ON Account FOR EACH ROW
+BEGIN
+DECLARE emsg varchar(250);
+SET emsg="NEW BALANCE CANNOT BE LESSTHAN OLD BALANCE";
+IF new.balance<old.balance THEN
+SIGNAL SQLSTATE '45000'
+SET MESSAGE_TEXT=emsg;
+END IF;
+END
