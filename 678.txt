@@ -1,4 +1,5 @@
-6)
+6) Create a view emp from employee such that it contains only emp_noemp_name and
+department.
 mysql> CREATE VIEW EMP_VIEW AS (SELECT E.SSN,E.FNAME,E.LNAME,D.DNAME FROM EMPLOYEE E,DEPARTMENT D);
 Query OK, 0 rows affected (0.11 sec)
 
@@ -33,7 +34,7 @@ mysql> SELECT * FROM EMP_VIEW;
 +-----------+----------+----------+----------------+
 24 rows in set (0.00 sec)
 -----------------------------------------------------------------------------------------
-7)
+7)Create a view dept from department with only dept_no and location.
 mysql> CREATE VIEW DEPT_VIEW AS (SELECT DNO,DLOC FROM DLOCATION);
 Query OK, 0 rows affected (0.09 sec)
 
@@ -49,7 +50,7 @@ mysql> SELECT * FROM DEPT_VIEW;
 +-----+-----------+
 5 rows in set (0.00 sec)
 ------------------------------------------------------------------------------------------
-8)
+8)Create a view that contains the details of employees who are managers only.
 mysql> CREATE VIEW MANAGER AS (SELECT FNAME,LNAME FROM EMPLOYEE WHERE SSN=SUPERSSN);
 Query OK, 0 rows affected (0.05 sec)
 
