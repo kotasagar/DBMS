@@ -1,22 +1,24 @@
 12) Create a cursor to modify the salary of all employees belonging to 'Research' department by 150%.
 
-create procedure emp_sal_update(in dept varchar(20))
-begin
-declare flag int default 0;
-declare s int default 0;
-declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
-declare continue handler for not found set flag=1;
-open update_cur;
-getRec: LOOP
-fetch update_cur into s;
-if flag=1 then
-LEAVE getRec;
-end if;
-update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
-END LOOP getRec;
-close update_cur;
-end
-
+mysql>delimiter //
+->create procedure emp_sal_update(in dept varchar(20))
+->begin
+->declare flag int default 0;
+->declare s int default 0;
+->declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+->declare continue handler for not found set flag=1;
+->open update_cur;
+->getRec: LOOP
+->fetch update_cur into s;
+->if flag=1 then
+->LEAVE getRec;
+->end if;
+->update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+->END LOOP getRec;
+->close update_cur;
+->end
+->//
+mysql>delimiter ;
 
 
 
@@ -33,9 +35,6 @@ mysql> insert into
     -> (555,'niteesh','1993-03-26','ECE',2017),(666,'joel','1995-05-05','AIML',2002);
 Query OK, 6 rows affected (0.00 sec)
 Records: 6  Duplicates: 0  Warnings: 0
-
-mysql> selec * from student;
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'selec * from student' at line 1
 mysql> select * from student;
 +-----+---------+------------+--------+------+
 | sno | sname   | dob        | course | year |
@@ -88,12 +87,16 @@ mysql> select * from temp_student;
 
 14) Write an update trigger on Account table. The system should keep track of the records that are being updated.
 
-CREATE TRIGGER ACCUPDATE BEFORE UPDATE ON Account FOR EACH ROW
-BEGIN
-DECLARE emsg varchar(250);
-SET emsg="NEW BALANCE CANNOT BE LESSTHAN OLD BALANCE";
-IF new.balance<old.balance THEN
-SIGNAL SQLSTATE '45000'
-SET MESSAGE_TEXT=emsg;
-END IF;
-END
+mysql>delimiter //
+->CREATE TRIGGER ACCUPDATE BEFORE UPDATE ON Account FOR EACH ROW
+->BEGIN
+->DECLARE emsg varchar(250);
+->SET emsg="NEW BALANCE CANNOT BE LESSTHAN OLD BALANCE";
+->IF new.balance<old.balance THEN
+->SIGNAL SQLSTATE '45000'
+->SET MESSAGE_TEXT=emsg;
+->END IF;
+->END
+->//
+mysql>delimiter ;
+mysql>delimiter //
