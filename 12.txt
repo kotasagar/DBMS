@@ -1,26 +1,58 @@
 12) Create a cursor to modify the salary of all employees belonging to 'Research' department by 150%.
 
-mysql>delimiter //
-->create procedure emp_sal_update(in dept varchar(20))
-->begin
-->declare flag int default 0;
-->declare s int default 0;
-->declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
-->declare continue handler for not found set flag=1;
-->open update_cur;
-->getRec: LOOP
-->fetch update_cur into s;
-->if flag=1 then
-->LEAVE getRec;
-->end if;
-->update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
-->END LOOP getRec;
-->close update_cur;
-->end
-->//
-mysql>delimiter ;
+mysql> delimiter //
+mysql> create procedure emp_sal_updates(in dept varchar(20))
+    -> begin
+    -> declare flag int default 0;
+    -> declare s int default 0;
+    -> declare update_cur cursor for select SALARY from EMPLOYEE,DEPARTMENT where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+    -> declare continue handler for not found set flag=1;
+    -> open update_cur;
+    -> fetch update_cur into s;
+    -> update EMPLOYEE,DEPARTMENT set SALARY=SALARY+(s*150/100) where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME=dept;
+    -> close update_cur;
+    -> end
+    -> //
+Query OK, 0 rows affected (0.03 sec)
 
+mysql> delimiter ;
 
+mysql> update EMPLOYEE,DEPARTMENT set SALARY=40000 where EMPLOYEE.DNO=DEPARTMENT.DNO and DEPARTMENT.DNAME="Research";
+Query OK, 4 rows affected (0.05 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> select * from EMPLOYEE;
++----------+-------+----------+-----------+------------+--------------+--------+--------+-----------+------+
+| FNAME    | MNAME | LNAME    | SSN       | DOB        | ADDRESS      | GENDER | SALARY | SUPERSSN  | DNO  |
++----------+-------+----------+-----------+------------+--------------+--------+--------+-----------+------+
+| John     | B     | Smith    | 123456789 | 1965-02-09 | 731 Fondren  | M      |  40000 | 333445555 | 5    |
+| Franklin | T     | Wong     | 333445555 | 1955-12-08 | 638 Voss     | M      |  40000 | 888665555 | 5    |
+| Joyce    | A     | English  | 453453453 | 1972-07-31 | 5631 Rice    | F      |  40000 | 333445555 | 5    |
+| Ramesh   | K     | Narayana | 666884444 | 1962-09-15 | 975 Fire Oak | M      |  40000 | 333445555 | 5    |
+| James    | E     | Brog     | 888665555 | 1937-10-10 | 450 Stone    | M      |  38000 | NULL      | 1    |
+| Jennifer | S     | Wallance | 987654321 | 1941-06-20 | 291 Berry    | F      |  43000 | 888665555 | 4    |
+| Ahmad    | V     | Jabbar   | 987987987 | 1969-03-22 | 980 Dallas   | M      |  25000 | 987987987 | 4    |
+| Alicia   | J     | Zelaya   | 999887777 | 1968-01-19 | 3321 Castle  | F      |  25000 | 987654321 | 4    |
++----------+-------+----------+-----------+------------+--------------+--------+--------+-----------+------+
+8 rows in set (0.00 sec)
+
+mysql> call emp_sal_updates("Research");
+Query OK, 4 rows affected (0.06 sec)
+
+mysql> select * from EMPLOYEE;
++----------+-------+----------+-----------+------------+--------------+--------+--------+-----------+------+
+| FNAME    | MNAME | LNAME    | SSN       | DOB        | ADDRESS      | GENDER | SALARY | SUPERSSN  | DNO  |
++----------+-------+----------+-----------+------------+--------------+--------+--------+-----------+------+
+| John     | B     | Smith    | 123456789 | 1965-02-09 | 731 Fondren  | M      | 100000 | 333445555 | 5    |
+| Franklin | T     | Wong     | 333445555 | 1955-12-08 | 638 Voss     | M      | 100000 | 888665555 | 5    |
+| Joyce    | A     | English  | 453453453 | 1972-07-31 | 5631 Rice    | F      | 100000 | 333445555 | 5    |
+| Ramesh   | K     | Narayana | 666884444 | 1962-09-15 | 975 Fire Oak | M      | 100000 | 333445555 | 5    |
+| James    | E     | Brog     | 888665555 | 1937-10-10 | 450 Stone    | M      |  38000 | NULL      | 1    |
+| Jennifer | S     | Wallance | 987654321 | 1941-06-20 | 291 Berry    | F      |  43000 | 888665555 | 4    |
+| Ahmad    | V     | Jabbar   | 987987987 | 1969-03-22 | 980 Dallas   | M      |  25000 | 987987987 | 4    |
+| Alicia   | J     | Zelaya   | 999887777 | 1968-01-19 | 3321 Castle  | F      |  25000 | 987654321 | 4    |
++----------+-------+----------+-----------+------------+--------------+--------+--------+-----------+------+
+8 rows in set (0.01 sec)
 
 13) Consider the college database. Retrieve all students who have registered for a specific course and store their details into another table using Cursors.
 
@@ -99,4 +131,5 @@ mysql>delimiter //
 ->END
 ->//
 mysql>delimiter ;
-mysql>delimiter //
+
+
