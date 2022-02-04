@@ -3,10 +3,20 @@ creation of collection :-
 > use sagar
 switched to db sagar
 
+> show dbs
+admin  0.000GB
+local  0.000GB
+
 insertion data into collection:-
  
 > db.std.insert({sno:"95",sname:"sagar",cgpa:"9.9"})
 WriteResult({ "nInserted" : 1 })
+
+> show dbs
+sagar  0.000GB
+admin  0.000GB
+local  0.000GB
+
 
 > db.std.insert({sno:"66",sname:"venu",cgpa:"9.8"})
 WriteResult({ "nInserted" : 1 })
