@@ -132,4 +132,19 @@ mysql>delimiter //
 ->//
 mysql>delimiter ;
 
+mysql> select * from Account;
++-------+---------+
+| accno | balance |
++-------+---------+
+|   111 |    1000 |
+|   222 |    2000 |
+|   333 |    3000 |
+|   444 |    4000 |
+|   555 |    5000 |
++-------+---------+
+5 rows in set (0.02 sec)
+
+mysql> update Account set balance = 500 where accno = 111;
+ERROR 1644 (45000): NEW BALANCE CANNOT BE LESSTHAN OLD BALANCE
+
 
