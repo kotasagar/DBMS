@@ -1,0 +1,106 @@
+creation of collection :-
+
+> use sagar
+switched to db sagar
+
+insertion data into collection:-
+ 
+> db.std.insert({sno:"95",sname:"sagar",cgpa:"9.9"})
+WriteResult({ "nInserted" : 1 })
+
+> db.std.insert({sno:"66",sname:"venu",cgpa:"9.8"})
+WriteResult({ "nInserted" : 1 })
+
+> db.std.insertMany([{_id:"3",sno:"66",sname:"venu",cgpa:"9.8"},{_id:"4",sno:"11",sname:"niteesh",cgpa:"9.5"},{_id:"5",sno:"41",sname:"tarun",cgpa:"9.6"}])
+{ "acknowledged" : true, "insertedIds" : [ "3", "4", "5" ] }
+
+> db.std.find().pretty()
+{
+	"_id" : ObjectId("61fcab339a87b14444f30dfc"),
+	"sno" : "95",
+	"sname" : "sagar",
+	"cgpa" : "9.9"
+}
+{
+	"_id" : ObjectId("61fcab4a9a87b14444f30dfd"),
+	"sno" : "66",
+	"sname" : "venu",
+	"cgpa" : "9.8"
+}
+{ "_id" : "3", "sno" : "66", "sname" : "venu", "cgpa" : "9.8" }
+{ "_id" : "4", "sno" : "11", "sname" : "niteesh", "cgpa" : "9.5" }
+{ "_id" : "5", "sno" : "41", "sname" : "tarun", "cgpa" : "9.6" }
+
+> db.std.insert({sno:"66",sname:"venu",cgpa:"9.8"})
+WriteResult({ "nInserted" : 1 })
+
+> db.std.find().pretty()
+{
+	"_id" : ObjectId("61fcab339a87b14444f30dfc"),
+	"sno" : "95",
+	"sname" : "sagar",
+	"cgpa" : "9.9"
+}
+{
+	"_id" : ObjectId("61fcab4a9a87b14444f30dfd"),
+	"sno" : "66",
+	"sname" : "venu",
+	"cgpa" : "9.8"
+}
+{ "_id" : "3", "sno" : "66", "sname" : "venu", "cgpa" : "9.8" }
+{ "_id" : "4", "sno" : "11", "sname" : "niteesh", "cgpa" : "9.5" }
+{ "_id" : "5", "sno" : "41", "sname" : "tarun", "cgpa" : "9.6" }
+{
+	"_id" : ObjectId("61fcac679a87b14444f30dfe"),
+	"sno" : "66",
+	"sname" : "venu",
+	"cgpa" : "9.8"
+}
+
+updation of data in collection:-
+
+> db.std.update({sno:"66"},{$set:{cgpa:"7.9"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.std.find().pretty()
+{
+	"_id" : ObjectId("61fcab339a87b14444f30dfc"),
+	"sno" : "95",
+	"sname" : "sagar",
+	"cgpa" : "9.9"
+}
+{
+	"_id" : ObjectId("61fcab4a9a87b14444f30dfd"),
+	"sno" : "66",
+	"sname" : "venu",
+	"cgpa" : "7.9"
+}
+{ "_id" : "3", "sno" : "66", "sname" : "venu", "cgpa" : "9.8" }
+{ "_id" : "4", "sno" : "11", "sname" : "niteesh", "cgpa" : "9.5" }
+{ "_id" : "5", "sno" : "41", "sname" : "tarun", "cgpa" : "9.6" }
+{
+	"_id" : ObjectId("61fcac679a87b14444f30dfe"),
+	"sno" : "66",
+	"sname" : "venu",
+	"cgpa" : "9.8"
+}
+
+deletion of data in collection:-
+
+> db.std.deleteOne({sno:"66"})
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+> db.std.insert({sno:"66",sname:"venu",cgpa:"9.8",add:"hyd"})
+WriteResult({ "nInserted" : 1 })
+
+> db.std.deleteMany({sno:"66"})
+{ "acknowledged" : true, "deletedCount" : 3 }
+
+> db.std.remove({})
+WriteResult({ "nRemoved" : 3 })
+
+> db.std.find().pretty()
+
+> db.dropDatabase()
+{ "dropped" : "sagar", "ok" : 1 }
+
